@@ -1,3 +1,7 @@
+ATTNENTION: this is detailed extended PROTOTYPE code !!!! it does not run or compile yet. The repo is a demo of AIlang coding. Do not use this or assume it works or is tested. 
+---
+
+
 # AIRedis: A Redis Server Implementation in AILang
 ## Proving Network Services Without C
 
