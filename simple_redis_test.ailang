@@ -1,0 +1,44 @@
+// simple_redis_test.ailang
+// Super simple Redis-like server - just responds to any input with +OK\r\n
+// Tests the foundation for building a real Redis server
+
+PrintMessage("=== Simple Redis Test Server ===")
+
+// Create and bind server
+server = SocketCreate()
+bind_result = SocketBind(server, 0, 6380)  // Use 6380 to avoid conflicts
+
+IfCondition NotEqual(bind_result, 0) ThenBlock {
+    PrintMessage("Failed to bind port 6380")
+    SocketClose(server)
+} ElseBlock {
+    PrintMessage("Server bound to port 6380")
+    SocketListen(server, 5)
+    PrintMessage("Listening... (test with: echo 'PING' | nc localhost 6380)")
+    
+    // Accept one client
+    client = SocketAccept(server)
+    PrintMessage("Client connected!")
+    
+    // Read command
+    buffer = ArrayCreate(256)
+    bytes_read = SocketRead(client, buffer, 256)
+    PrintMessage("Bytes received:")
+    PrintNumber(bytes_read)
+    
+    // Send simple Redis response: +OK\r\n
+    response = ArrayCreate(5)
+    ArraySet(response, 0, 43)   // '+' 
+    ArraySet(response, 1, 79)   // 'O'
+    ArraySet(response, 2, 75)   // 'K'
+    ArraySet(response, 3, 13)   // '\r'
+    ArraySet(response, 4, 10)   // '\n'
+    
+    bytes_sent = SocketWrite(client, response, 5)
+    PrintMessage("Sent OK response")
+    
+    // Cleanup
+    SocketClose(client)
+    SocketClose(server)
+    PrintMessage("Server stopped")
+}
