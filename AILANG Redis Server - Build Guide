@@ -1,0 +1,59 @@
+AILANG Redis Server - Build Guide
+Prerequisites
+
+AILANG compiler (Python 3.x)
+Linux/WSL environment
+gcc (for AILANG compiler backend)
+
+Quick Start
+bash# 1. Clone or download the AILANG compiler
+git clone [ailang-repo-url]
+cd ailang
+
+# 2. Place files in correct locations
+# - redis_server.ailang in root directory
+# - Library.RESP.ailang in Libraries/Library/
+
+# 3. Build the server
+python3 main.py redis_server.ailang
+
+# 4. Run the server
+./redis_server_exec
+
+# Server is now running on port 6379
+File Layout
+ailang/
+├── main.py                               # AILANG compiler
+├── redis_server.ailang                   # Redis server code
+├── redis_server_exec                     # Compiled binary (37KB)
+├── Libraries/
+│   └── Library/
+│       └── Library.RESP.ailang          # RESP protocol library
+├── test_ailang_redis.sh                 # Test suite
+└── test_perf.py                          # Performance test
+Testing
+bash# Basic test
+redis-cli -p 6379 PING
+# Should return: PONG
+
+# Full test suite
+chmod +x test_ailang_redis.sh
+./test_ailang_redis.sh
+
+# Performance benchmark
+python3 test_perf.py
+# Should show: ~0.08ms per PING
+Troubleshooting
+If compilation fails:
+
+Ensure Library.RESP.ailang is in Libraries/Library/ directory
+Check that you have Python 3.x installed
+Verify gcc is available (gcc --version)
+
+If server won't start:
+
+Check port 6379 is free (lsof -i :6379)
+Ensure binary has execute permissions (chmod +x redis_server_exec)
+
+Supported Redis Commands
+PING, SET, GET, EXISTS, DEL, INCR, DECR, APPEND, STRLEN, ECHO, INFO, CONFIG, SELECT, FLUSHDB, DBSIZE, QUIT
